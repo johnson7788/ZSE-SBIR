@@ -18,7 +18,8 @@ def train():
     train_data, sk_valid_data, im_valid_data = load_data(args)
 
     model = Model(args)
-    model = model.cuda()
+    if not args.cpu:
+        model = model.cuda()
 
     # batch=15, lr=1e-5 / batch=30, lr=2e-5
     optimizer = build_optimizer(args, model)
@@ -41,19 +42,21 @@ def train():
             # prepare data
             sk = torch.cat((sk, sk_neg))
             im = torch.cat((im, im_neg))
-            sk, im = sk.cuda(), im.cuda()
+            if not args.cpu:
+                sk, im = sk.cuda(), im.cuda()
 
             # prepare rn truth
             target_rn = torch.cat((torch.ones(sk_label.size()), torch.zeros(sk_label.size())), dim=0)
             target_rn = torch.clamp(target_rn, 0.01, 0.99).unsqueeze(dim=1)
-            target_rn = target_rn.cuda()
+            if not args.cpu:
+                target_rn = target_rn.cuda()
 
             # calculate feature
             cls_fea, rn_scores = model(sk, im)
 
             # loss
             losstri = triplet_loss(cls_fea, args) * 2   # The initial value of losstri should be around 1.00.
-            lossrn = rn_loss(rn_scores, target_rn) * 4  # The initial value of lossrn should be around 1.00.
+            lossrn = rn_loss(rn_scores, target_rn, args) * 4  # The initial value of lossrn should be around 1.00.
             loss = losstri + lossrn
 
             # backward

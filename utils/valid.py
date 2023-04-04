@@ -27,7 +27,8 @@ def valid_cls(args, model, sk_valid_data, im_valid_data):
             all_sk_label = np.concatenate((all_sk_label, sk_label.numpy()), axis=0)
 
         sk_len = sk.size(0)
-        sk = sk.cuda()
+        if not args.cpu:
+            sk = sk.cuda()
         sk, sk_idxs = model(sk, None, 'test', only_sa=True)
 
         for j, (im, im_label) in enumerate(tqdm(im_dataload)):
@@ -37,11 +38,16 @@ def valid_cls(args, model, sk_valid_data, im_valid_data):
                 all_im_label = np.concatenate((all_im_label, im_label.numpy()), axis=0)
 
             im_len = im.size(0)
-            im = im.cuda()
+            if not args.cpu:
+                im = im.cuda()
             im, im_idxs = model(im, None, 'test', only_sa=True)
 
-            sk_temp = sk.unsqueeze(1).repeat(1, im_len, 1, 1).flatten(0, 1).cuda()
-            im_temp = im.unsqueeze(0).repeat(sk_len, 1, 1, 1).flatten(0, 1).cuda()
+            sk_temp = sk.unsqueeze(1).repeat(1, im_len, 1, 1).flatten(0, 1)
+            if not args.cpu:
+                sk_temp = sk_temp.cuda()
+            im_temp = im.unsqueeze(0).repeat(sk_len, 1, 1, 1).flatten(0, 1)
+            if not args.cpu:
+                im_temp = im_temp.cuda()
 
             if args.retrieval == 'rn':
                 feature_1, feature_2 = model(sk_temp, im_temp, 'test')

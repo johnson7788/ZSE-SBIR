@@ -38,6 +38,8 @@ class Option:
         parser.add_argument('--num_workers', type=int, default=4)
 
         # other
+        # 增加只用CPU的选项
+        parser.add_argument('--cpu',action='store_true', help='只用CPU')
         parser.add_argument('--choose_cuda', '-c', type=str, default='0')
         parser.add_argument("--seed", type=int, default=2021, help="random seed.")
 

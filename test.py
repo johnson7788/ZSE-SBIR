@@ -27,7 +27,8 @@ def test():
 
     if len(args.choose_cuda) > 1:
         model = torch.nn.parallel.DataParallel(model.to('cuda'))
-    model = model.cuda()
+    if not args.cpu:
+        model = model.cuda()
 
     # valid
     map_all, map_200, precision_100, precision_200 = valid_cls(args, model, sk_valid_data, im_valid_data)
