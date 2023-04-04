@@ -32,3 +32,4 @@ hs_err_pid*
 *.lock
 .git
 sam_ViT-B_16.pth
+*.pth

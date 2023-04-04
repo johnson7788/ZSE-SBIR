@@ -86,7 +86,7 @@ def get_file_iccv(labels, rootpath, class_name, cname, number, file_ls):
     ind = np.argwhere(labels == label)
     ind_rand = np.random.randint(1, len(ind), number)
     ind_ori = ind[ind_rand]
-    files = file_ls[ind_ori][0][0]
+    files = file_ls[ind_ori][0][0] # 获取一个图片文件
     full_path = os.path.join(rootpath, files)
     return full_path
 

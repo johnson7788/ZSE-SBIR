@@ -89,7 +89,7 @@ class Encoder1DBlock(nn.Module):
 
     def forward(self, inputs, keep_rate):
         x = self.layer_norm_input(inputs)
-        x, index, idx, cls_attn, left_tokens = self.attention(x, keep_rate)
+        x, index, idx, cls_attn, left_tokens = self.attention(x, keep_rate)  #keep_rate：1
         x = self.drop_out_attention(x)
         x = x + inputs
 
@@ -126,7 +126,7 @@ class Encoder(nn.Module):
         idxs = []
 
         for i, layer in enumerate(self.layers):
-            x, left_token, idx = layer[0](x, self.keep_rate[i])
+            x, left_token, idx = layer[0](x, self.keep_rate[i])  #x:[60,197,768], left_token:196, idx:[None]
             left_tokens.append(left_token)
             idxs.append(idx)
 
@@ -154,22 +154,22 @@ class ViTPatch(nn.Module):
         # self.mlp_head = nn.Linear(hidden_size, num_classes)
 
     def forward(self, img, mask=None):
-        x1 = self.embedding(img)
-        x2 = self.scale(img)
-        x = (x1 + x2) / 2
+        x1 = self.embedding(img) #img: [B, C, H, W] [60,3,224,224] -> 卷积：x: （60，768，14，14）
+        x2 = self.scale(img)  # 一系列卷积,x2: （60，768，14，14）
+        x = (x1 + x2) / 2  # 形状不变， x: （60，768，14，14）
 
-        x = rearrange(x, 'b c h w  -> b (h w) c')
-        b, n, _ = x.shape
-
+        x = rearrange(x, 'b c h w  -> b (h w) c') #x: （60，196，768）, 196 = 14*14
+        b, n, _ = x.shape  #b：60， n：196， 分别代表batch_size和patch碎片的个数
+        # self.cls:[1,1,768] --> cls_tokens:[60,1,768], 重复60次
         cls_tokens = repeat(self.cls, '() n d -> b n d', b=b)
-        x = torch.cat((cls_tokens, x), dim=1)
-        x += self.pos_embedding[:, :(n + 1)]
+        x = torch.cat((cls_tokens, x), dim=1) #加上cls_tokens，x: (60，196，768）->（60，197，768）
+        x += self.pos_embedding[:, :(n + 1)]   #x: (60，197，768）->（60，197，768）, 加上位置编码
         x = self.dropout(x)
         x, left_tokens, idxs = self.transformer(x)
 
         # x1 = self.to_cls_token(x[:, 0])
         # return x1, x[:, 1:]
-
+        # x: (60，197，768), left_tokens: (12), idxs: (12), 12代表12层, left_tokens: [196, 196, 196, 196, 196, 196, 196, 196, 196, 196, 196, 196]
         return x, left_tokens, idxs
 
 

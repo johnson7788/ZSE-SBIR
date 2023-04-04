@@ -19,12 +19,12 @@ class Model(nn.Module):
 
 
     def forward(self, sk, im, stage='train', only_sa=False):
-
+        # sk: [b, 3, 224, 224], im: [b, 3, 224, 224]
         if stage == 'train':
 
-            sk_im = torch.cat((sk, im), dim=0)
-            sa_fea, left_tokens, idxs = self.sa(sk_im)  # [4b, 197, 768]
-            ca_fea = self.ca(sa_fea)  # [4b, 197, 768]
+            sk_im = torch.cat((sk, im), dim=0) # [2b, 3, 224, 224]
+            sa_fea, left_tokens, idxs = self.sa(sk_im)  #   [4b, 197, 768]
+            ca_fea = self.ca(sa_fea)  # [4b, 197, 768]-->[4b, 197, 768]
 
             cls_fea = ca_fea[:, 0]  # [4b, 1, 768]
             token_fea = ca_fea[:, 1:]  # [4b, 196, 768]

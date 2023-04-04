@@ -37,16 +37,17 @@ class TrainSet(data.Dataset):
 
 
     def __getitem__(self, index):
-        # choose 3 label
+        # choose 3 label, eg: ['hammer' 'lizard' 'hat']
         self.choose_label_name = np.random.choice(self.train_class_label, 3, replace=False)
 
         sk_label = self.class_dict.get(self.choose_label_name[0])
         im_label = self.class_dict.get(self.choose_label_name[0])
         sk_label_neg = self.class_dict.get(self.choose_label_name[0])
         im_label_neg = self.class_dict.get(self.choose_label_name[-1])
-
+        # 获取一张草图图片文件,sketch: eg: './datasets/Sketchy/256x256/sketch/tx_000000000000/hammer/n03481172_11394-3.png'
         sketch = get_file_iccv(self.pre_load.all_train_sketch_label, self.root_dir, self.choose_label_name[0],
                                self.pre_load.all_train_sketch_cls_name, 1, self.pre_load.all_train_sketch)
+        # 获取一张 './datasets/Sketchy/256x256/photo/tx_000000000000/hammer/n03481172_31212.jpg'
         image = get_file_iccv(self.pre_load.all_train_image_label, self.root_dir, self.choose_label_name[0],
                               self.pre_load.all_train_image_cls_name, 1, self.pre_load.all_train_image)
         sketch_neg = get_file_iccv(self.pre_load.all_train_sketch_label, self.root_dir, self.choose_label_name[0],
@@ -58,7 +59,7 @@ class TrainSet(data.Dataset):
         image = preprocess(image)
         sketch_neg = preprocess(sketch_neg, 'sk')
         image_neg = preprocess(image_neg)
-
+        # sketch,image,sketch_neg,image_neg: torch.Size([3, 224, 224]), sk_label:31, im_label:31, sk_label_neg:31, im_label_neg:62
         return sketch, image, sketch_neg, image_neg, \
                sk_label, im_label, sk_label_neg, im_label_neg
 
