@@ -15,6 +15,8 @@ def get_all_train_file(args, skim):
             shot_dir = "zeroshot1"
         elif args.test_class == "test_class_sketchy21":
             shot_dir = "zeroshot0"
+        elif args.test_class == "test_class_sketchy2":
+            shot_dir = "zeroshot2"
 
         cname_cid = args.data_path + f'/Sketchy/{shot_dir}/cname_cid.txt'
         if skim == 'sketch':
@@ -96,6 +98,8 @@ def get_file_list_iccv(args, rootpath, skim, split):
             shot_dir = "zeroshot1"
         elif args.test_class == "test_class_sketchy21":
             shot_dir = "zeroshot0"
+        elif args.test_class == "test_class_sketchy2":
+            shot_dir = "zeroshot2"
         else:
             NameError("zeroshot is invalid")
 
@@ -198,6 +202,7 @@ def preprocess(image_path, img_type="im"):
         return transform(Image.open(image_path).resize((224, 224)).convert('RGB'))
     else:
         # 对sketch 进行crop，等比例扩大到224
+        assert os.path.exists(image_path), f"{image_path} 不存在，请检查"
         img = cv2.imread(image_path)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = remove_white_space_image(img, 10)

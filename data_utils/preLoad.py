@@ -14,6 +14,14 @@ def load_para(args):
             with open(train_dir, 'r') as f:
                 file_content = f.readlines()
                 train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
+        if args.test_class == 'test_class_sketchy2':
+            with open(args.data_path + "/Sketchy/zeroshot2/cname_cid_zero.txt", 'r') as f:
+                file_content = f.readlines()
+                test_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
+            train_dir = args.data_path + "/Sketchy/zeroshot2/cname_cid.txt"
+            with open(train_dir, 'r') as f:
+                file_content = f.readlines()
+                train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
 
         elif args.test_class == "test_class_sketchy21":
             with open(args.data_path + "/Sketchy/zeroshot0/cname_cid_zero.txt", 'r') as f:
@@ -43,8 +51,8 @@ def load_para(args):
             file_content = f.readlines()
             train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
 
-    print('training classes: ', train_class_label.shape)
-    print('testing classes: ', test_class_label.shape)
+    print('训练集的数据类别数量: ', train_class_label.shape)
+    print('测试集的数据类别数量: ', test_class_label.shape)
     return train_class_label, test_class_label
 
 

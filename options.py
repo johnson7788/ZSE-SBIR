@@ -2,7 +2,6 @@ import argparse
 
 
 class Option:
-
     def __init__(self):
         parser = argparse.ArgumentParser(description="args for model")
 
@@ -10,8 +9,8 @@ class Option:
         parser.add_argument('--data_path', type=str, default="./datasets")
         parser.add_argument('--dataset', type=str, default='sketchy_extend',
                             choices=['sketchy_extend', 'tu_berlin', 'Quickdraw'])
-        parser.add_argument('--test_class', type=str, default='test_class_sketchy25',
-                            choices=['test_class_sketchy25', 'test_class_sketchy21', 'test_class_tuberlin30', 'Quickdraw'])
+        parser.add_argument('--test_class', type=str, default='test_class_sketchy2',
+                            choices=['test_class_sketchy2','test_class_sketchy25', 'test_class_sketchy21', 'test_class_tuberlin30', 'Quickdraw'])
 
         # model
         parser.add_argument('--cls_number', type=int, default=100)

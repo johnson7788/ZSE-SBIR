@@ -11,16 +11,16 @@ components (i) a self-attention module with a learnable tokenizer to produce vis
 ![Fig.1](./images/overview.png)
 
 ## Datasets
-Please download SBIR datasets from the official websites and unzip each dataset to the corresponding directory in `./datasets`. We provide train and test splits for different datasets.
+请从官方网站下载SBIR数据集，并将每个数据集解压到`./datasets`中的相应目录。我们为不同的数据集提供训练和测试分片。
 
 ### Sketchy
-Please go to the [Sketchy official website](https://sketchy.eye.gatech.edu/) to download the _Sketches and Photos_ datasets.
+请到[Sketchy官方网站](https://sketchy.eye.gatech.edu/)下载_Sketches和Photos_数据集。
 
 ### TU-Berlin
-Please go to the [TU-Berlin official website](http://cybertron.cg.tu-berlin.de/eitz/projects/classifysketch/) to download the _Sketches and Photos_ datasets.
+请到[柏林工业大学官方网站]（http://cybertron.cg.tu-berlin.de/eitz/projects/classifysketch/）下载_草图和照片_数据集。
 
 ### QuickDraw
-Please go to the [QuickDraw official website](https://github.com/googlecreativelab/quickdraw-dataset) to download the datasets. The original data format is vector, please convert it to `.png` or `.jpg` before use it.
+请到【QuickDraw官方网站】（https://github.com/googlecreativelab/quickdraw-dataset）下载数据集。原始数据格式为矢量，请在使用前将其转换为`.png`或`.jpg`。
 
 ## Installation
 The requirements of this repo can be found in `requirements.txt`.
@@ -77,8 +77,7 @@ seed,                 # random seed, 2021 as default.
 ```
 
 ### Train ZSE-SBIR
-
-Here is a quick start for training the network on Sketchy Ext. Please pay attention to modifying data path and save path before run.
+下面是在Sketchy Ext上训练网络的快速入门。 请注意在运行前修改数据路径和保存路径。
 ```bash
 python -u train.py 
 # or use nohup command
@@ -128,8 +127,7 @@ The trained model on Sketchy Ext is provided on [Google Drive](https://drive.goo
 
 
 ### Evaluate ZSE-SBIR
-
-Here is a quick start for evaluating the network on Sketchy Ext. Please pay attention to modifying data path and save path before run.
+下面是一个在Sketchy Ext上评估网络的快速开始。 请注意在运行前修改数据路径和保存路径。
 ```bash
 # use rn-score for zs-sbir, and use all test data.
 python -u test.py -r rn -- testall
