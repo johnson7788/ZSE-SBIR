@@ -16,10 +16,13 @@ def build_optimizer(args, model):
     return optimizer
 
 
-def load_checkpoint(model_file):
+def load_checkpoint(model_file, cpu=False):
     if os.path.isfile(model_file):
         print("=> loading model '{}'".format(model_file))
-        checkpoint = torch.load(model_file)
+        if cpu:
+            checkpoint = torch.load(model_file, map_location="cpu")
+        else:
+            checkpoint = torch.load(model_file)
         return checkpoint
     else:
         print("=> no model found at '{}'".format(model_file))

@@ -7,8 +7,12 @@ from .utils import preprocess, get_file_iccv, create_dict_texts
 
 def load_data_test(args):
     pre_load = PreLoad(args)
-    sk_valid_data = ValidSet(pre_load, 'sk', half=True)
-    im_valid_data = ValidSet(pre_load, 'im', half=True)
+    if args.cpu:
+        half = False
+    else:
+        half = True
+    sk_valid_data = ValidSet(pre_load, 'sk', half=half)
+    im_valid_data = ValidSet(pre_load, 'im', half=half)
     return sk_valid_data, im_valid_data
 
 

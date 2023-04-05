@@ -15,12 +15,12 @@ def test():
 
     # prepare model
     model = Model(args)
-    model = model.half()
+    if not args.cpu:
+        model = model.half()
 
     if args.load is not None:
         assert os.path.isfile(args.load), f'错误: 没有找到模型,请检查路径!, {args.load}'
-        checkpoint = load_checkpoint(args.load)
-
+        checkpoint = load_checkpoint(args.load, args.cpu)
     cur = model.state_dict()
     new = {k: v for k, v in checkpoint['model'].items() if k in cur.keys()}
     cur.update(new)
