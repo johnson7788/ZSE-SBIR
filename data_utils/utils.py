@@ -88,14 +88,24 @@ def get_some_file_iccv(labels, rootpath, class_list, cname, number, file_ls):
 
 
 def get_file_iccv(labels, rootpath, class_name, cname, number, file_ls):
-    # 该类的label
+    # 该类的label, 获取class_name对应的标签id,label例如是:1775, class_name：标签名称, cname:所有的标签名称, number:获取的样本数, file_ls:所有的图片路径
     label = np.argwhere(cname == class_name)[0, 0]
-    # 该类的所有样本
+    # 该类的所有样本, labels:所有的标签,是数字的array, label:单个标签id, ind:该标签对应的所有样本的索引,可能有多个或者一个
     ind = np.argwhere(labels == label)
-    ind_rand = np.random.randint(1, len(ind), number)
-    ind_ori = ind[ind_rand]
-    files = file_ls[ind_ori][0][0] # 获取一个图片文件
+    # 如果是多个,则随机选取一个,如果是一个,则直接选取
+    if len(ind) > 1:
+        ind_rand = np.random.randint(low=1, high=len(ind), size=number)
+        ind_ori = ind[ind_rand]
+        files = file_ls[ind_ori][0][0]
+    else:
+        ind_rand = 0
+        if len(ind) == 0:
+            print(f"标签名{class_name}，id是{label}在数据集中不存在，请检查")
+        ind_ori = ind[ind_rand]
+        files = file_ls[ind_ori][0]
+ # 获取一个图片文件
     full_path = os.path.join(rootpath, files)
+    assert os.path.exists(full_path) and os.path.isfile(full_path), f"{full_path} 不存在，请检查!"
     return full_path
 
 
@@ -118,7 +128,7 @@ def get_file_list_iccv(args, rootpath, skim, split):
     elif args.dataset == 'comestic':
         if skim == 'sketch':
             file_ls_file = args.data_path + '/comestic/zeroshot/sketch_tx_000000000000_ready_filelist_zero.txt'
-        elif skim == 'image':
+        elif skim == 'images':
             file_ls_file = args.data_path + '/comestic/zeroshot/all_photo_filelist_zero.txt'
         else:
             NameError(skim + ' not implemented!')
@@ -220,6 +230,7 @@ def preprocess(image_path, img_type="im"):
     ])
 
     if img_type == 'im':
+        assert os.path.exists(image_path) and os.path.isfile(image_path), f"{image_path} 不存在，请检查"
         return transform(Image.open(image_path).resize((224, 224)).convert('RGB'))
     else:
         # 对sketch 进行crop，等比例扩大到224
@@ -250,9 +261,11 @@ def remove_white_space_image(img_np: np.ndarray, padding: int):
     h, w, c = img_np.shape
     img_np_single = np.sum(img_np, axis=2)
     Y, X = np.where(img_np_single <= 300)  # max = 300
-    ymin, ymax, xmin, xmax = np.min(Y), np.max(Y), np.min(X), np.max(X)
-    img_cropped = img_np[max(0, ymin - padding):min(h, ymax + padding), max(0, xmin - padding):min(w, xmax + padding),
-                  :]
+    if X.size > 0 and Y.size > 0:
+        ymin, ymax, xmin, xmax = np.min(Y), np.max(Y), np.min(X), np.max(X)
+        img_cropped = img_np[max(0, ymin - padding):min(h, ymax + padding), max(0, xmin - padding):min(w, xmax + padding),:]
+    else:
+        img_cropped = img_np
     return img_cropped
 
 

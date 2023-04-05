@@ -39,7 +39,7 @@ def train():
         num_total_steps = args.datasetLen // args.batch
 
         for index, (sk, im, sk_neg, im_neg, sk_label, im_label, _, _) in enumerate(train_data_loader):
-            print(f"正在训练第 {epoch} 的第 {index} 个batch")
+            print(f"正在训练第 {epoch} 个epoch的第 {index} 个batch")
             sk = torch.cat((sk, sk_neg))  #shape: (30, 3, 224, 224)
             im = torch.cat((im, im_neg))  #shape: (30, 3, 224, 224)
             if not args.cpu:
