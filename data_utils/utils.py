@@ -34,6 +34,14 @@ def get_all_train_file(args, skim):
             file_ls_file = args.data_path + '/TUBerlin/zeroshot/ImageResized_ready_filelist_train.txt'
         else:
             NameError(skim + ' not implemented!')
+    elif args.dataset == 'comestic':
+        cname_cid = args.data_path + '/comestic/zeroshot/cname_cid.txt'
+        if skim == 'sketch':
+            file_ls_file = args.data_path + '/comestic/zeroshot/sketch_tx_000000000000_ready_filelist_train.txt'
+        elif skim == 'image':
+            file_ls_file = args.data_path + '/comestic/zeroshot/all_photo_filelist_train.txt'
+        else:
+            NameError(skim + ' not implemented!')
 
     elif args.dataset == 'Quickdraw':
         cname_cid = args.data_path + '/QuickDraw/zeroshot/cname_cid.txt'
@@ -107,7 +115,13 @@ def get_file_list_iccv(args, rootpath, skim, split):
             file_ls_file = args.data_path + f'/Sketchy/{shot_dir}/sketch_tx_000000000000_ready_filelist_zero.txt'
         elif skim == 'images':
             file_ls_file = args.data_path + f'/Sketchy/{shot_dir}/all_photo_filelist_zero.txt'
-
+    elif args.dataset == 'comestic':
+        if skim == 'sketch':
+            file_ls_file = args.data_path + '/comestic/zeroshot/sketch_tx_000000000000_ready_filelist_zero.txt'
+        elif skim == 'image':
+            file_ls_file = args.data_path + '/comestic/zeroshot/all_photo_filelist_zero.txt'
+        else:
+            NameError(skim + ' not implemented!')
     elif args.dataset == 'tu_berlin':
         if skim == 'sketch':
             file_ls_file = args.data_path + '/TUBerlin/zeroshot/png_ready_filelist_zero.txt'
@@ -140,6 +154,13 @@ def get_file_list_iccv(args, rootpath, skim, split):
         labels = labels[index[:]]
 
     if args.dataset == 'sketchy_extend' and split == 'test' and skim == 'images':
+        if args.testall:
+            index = [i for i in range(0, file_names.shape[0], 1)]  # 17101
+        else:
+            index = [i for i in range(0, file_names.shape[0], 10)]  # 1711
+        file_names = file_names[index[:]]
+        labels = labels[index[:]]
+    if args.dataset == 'comestic' and split == 'test' and skim == 'images':
         if args.testall:
             index = [i for i in range(0, file_names.shape[0], 1)]  # 17101
         else:

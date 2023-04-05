@@ -27,8 +27,8 @@ def gen_data():
     assert train_class_names == test_class_names, "训练集和测试集的类别不一致"
     print(f"训练集的类别数量为{len(train_class_names)}")
     # 前100类作为训练集，剩下的类作为测试集
-    train_class_names = train_class_names[:100]
-    test_class_names = test_class_names[100:]
+    train_class_names = train_class_names[:120]
+    test_class_names = test_class_names[120:]
     train_class_dict = {class_name: i for i, class_name in enumerate(train_class_names)}
     test_class_dict = {class_name: i for i, class_name in enumerate(test_class_names)}
     # 保存训练集的类别

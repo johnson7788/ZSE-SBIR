@@ -7,10 +7,10 @@ class Option:
 
         # dataset
         parser.add_argument('--data_path', type=str, default="./datasets")
-        parser.add_argument('--dataset', type=str, default='sketchy_extend',
-                            choices=['sketchy_extend', 'tu_berlin', 'Quickdraw'])
+        parser.add_argument('--dataset', type=str, default='comestic',
+                            choices=['sketchy_extend', 'tu_berlin', 'Quickdraw','comestic'])
         parser.add_argument('--test_class', type=str, default='test_class_sketchy2',
-                            choices=['test_class_sketchy2','test_class_sketchy25', 'test_class_sketchy21', 'test_class_tuberlin30', 'Quickdraw'])
+                            choices=['test_class_sketchy2','test_class_sketchy25', 'test_class_sketchy21', 'test_class_tuberlin30', 'Quickdraw','test_class_comestic'])
 
         # model
         parser.add_argument('--cls_number', type=int, default=100)
@@ -35,7 +35,7 @@ class Option:
         parser.add_argument('--testall', default=False, action='store_true', help='train/test scale')
         parser.add_argument('--test_sk', type=int, default=20)
         parser.add_argument('--test_im', type=int, default=20)
-        parser.add_argument('--num_workers', type=int, default=4)
+        parser.add_argument('--num_workers', type=int, default=0)
 
         # other
         # 增加只用CPU的选项

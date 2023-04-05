@@ -23,8 +23,8 @@ class Model(nn.Module):
         if stage == 'train':
 
             sk_im = torch.cat((sk, im), dim=0) # [2b, 3, 224, 224]
-            sa_fea, left_tokens, idxs = self.sa(sk_im)  #   [4b, 197, 768]
-            ca_fea = self.ca(sa_fea)  # [4b, 197, 768]-->[4b, 197, 768]
+            sa_fea, left_tokens, idxs = self.sa(sk_im)  # self attention  [4b, 197, 768]
+            ca_fea = self.ca(sa_fea)  #cross-attention [4b, 197, 768]-->[4b, 197, 768]
 
             cls_fea = ca_fea[:, 0]  # [4b, 1, 768]
             token_fea = ca_fea[:, 1:]  # [4b, 196, 768]
@@ -48,11 +48,11 @@ class Model(nn.Module):
         else:
 
             if only_sa:
-                sa_fea, left_tokens, idxs = self.sa(sk)  # [b, 197, 768]
+                sa_fea, left_tokens, idxs = self.sa(sk)  # self attention ,[b, 197, 768]
                 return sa_fea, idxs
             else:
                 sk_im = torch.cat((sk, im), dim=0)
-                ca_fea = self.ca(sk_im)  # [2b, 197, 768]
+                ca_fea = self.ca(sk_im)  # cross-attention [2b, 197, 768]
 
                 cls_fea = ca_fea[:, 0]  # [2b, 1, 768]
                 token_fea = ca_fea[:, 1:]  # [2b, 196, 768]

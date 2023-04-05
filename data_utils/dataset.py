@@ -36,6 +36,8 @@ class TrainSet(data.Dataset):
             self.root_dir = args.data_path + '/Sketchy'
         elif self.args.dataset == 'tu_berlin':
             self.root_dir = args.data_path + '/TUBerlin'
+        elif self.args.dataset == 'comestic':
+            self.root_dir = args.data_path + '/comestic'
         elif self.args.dataset == 'Quickdraw':
             self.root_dir = args.data_path + '/QuickDraw'
 

@@ -14,7 +14,7 @@ def load_para(args):
             with open(train_dir, 'r') as f:
                 file_content = f.readlines()
                 train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
-        if args.test_class == 'test_class_sketchy2':
+        elif args.test_class == 'test_class_sketchy2':
             with open(args.data_path + "/Sketchy/zeroshot2/cname_cid_zero.txt", 'r') as f:
                 file_content = f.readlines()
                 test_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
@@ -22,7 +22,14 @@ def load_para(args):
             with open(train_dir, 'r') as f:
                 file_content = f.readlines()
                 train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
-
+        elif args.test_class == 'test_class_comestic':
+            with open(args.data_path + "/comestic/zeroshot/cname_cid_zero.txt", 'r') as f:
+                file_content = f.readlines()
+                test_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
+            train_dir = args.data_path + "/comestic/zeroshot/cname_cid.txt"
+            with open(train_dir, 'r') as f:
+                file_content = f.readlines()
+                train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
         elif args.test_class == "test_class_sketchy21":
             with open(args.data_path + "/Sketchy/zeroshot0/cname_cid_zero.txt", 'r') as f:
                 file_content = f.readlines()
@@ -31,7 +38,15 @@ def load_para(args):
             with open(train_dir, 'r') as f:
                 file_content = f.readlines()
                 train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
-
+    if args.dataset == 'comestic':
+        if args.test_class == 'test_class_comestic':
+            with open(args.data_path + "/comestic/zeroshot/cname_cid_zero.txt", 'r') as f:
+                file_content = f.readlines()
+                test_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
+            train_dir = args.data_path + "/comestic/zeroshot/cname_cid.txt"
+            with open(train_dir, 'r') as f:
+                file_content = f.readlines()
+                train_class_label = np.array([' '.join(ff.strip().split()[:-1]) for ff in file_content])
     elif args.dataset == 'tu_berlin':
         if args.test_class == 'test_class_tuberlin30':
             with open(args.data_path + "/TUBerlin/zeroshot/cname_cid_zero.txt", 'r') as f:
@@ -79,6 +94,8 @@ class PreLoad:
             train_dir = args.data_path + '/Sketchy/'
         elif args.dataset == 'tu_berlin':
             train_dir = args.data_path + '/TUBerlin/'
+        elif args.dataset == 'comestic':
+            train_dir = args.data_path + '/comestic/'
         elif args.dataset == 'Quickdraw':
             train_dir = args.data_path + '/QuickDraw/'
         else:
