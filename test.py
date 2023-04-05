@@ -14,10 +14,11 @@ def test():
     sk_valid_data, im_valid_data = load_data_test(args)
 
     # prepare model
-    model = Model(args.d_model, args)
+    model = Model(args)
     model = model.half()
 
     if args.load is not None:
+        assert os.path.isfile(args.load), f'错误: 没有找到模型,请检查路径!, {args.load}'
         checkpoint = load_checkpoint(args.load)
 
     cur = model.state_dict()
