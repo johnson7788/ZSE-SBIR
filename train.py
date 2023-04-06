@@ -70,8 +70,8 @@ def train():
                 time_per_step = (time.time() - start_time) / max(1, step)
                 remaining_time = time_per_step * (num_total_steps - step)
                 remaining_time = time.strftime('%H:%M:%S', time.gmtime(remaining_time))
-                print(f'epoch_{epoch} step_{step} eta {remaining_time}: loss:{loss.item():.3f} '
-                      f'tri:{losstri.item():.3f} rn:{lossrn.item():.3f}')
+                print(f'Epoch是:{epoch} step是:{step} 当前Epoch训练完成需要时间: {remaining_time} 总loss:{loss.item():.3f} '
+                      f'三元组loss:{losstri.item():.3f} 二分类loss:{lossrn.item():.3f}')
 
         if epoch >= 10:
             print('------------------------valid------------------------')
