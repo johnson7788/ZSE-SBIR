@@ -20,6 +20,7 @@ def valid_cls(args, model, sk_valid_data, im_valid_data):
 
     dist_im = None
     all_dist = None
+    assert len(sk_dataload) >0, "sketch data是空的，这是有问题的"
     for i, (sk, sk_label) in enumerate(tqdm(sk_dataload)):
         if i == 0:
             all_sk_label = sk_label.numpy()
