@@ -46,28 +46,28 @@ class Model(nn.Module):
             return cls_fea, rn_scores
 
         else:
-
+            # 推理阶段
             if only_sa:
                 sa_fea, left_tokens, idxs = self.sa(sk)  # self attention ,[b, 197, 768]
                 return sa_fea, idxs
             else:
-                sk_im = torch.cat((sk, im), dim=0)
+                sk_im = torch.cat((sk, im), dim=0)  #拼接 [2b, 3, 224, 224]
                 ca_fea = self.ca(sk_im)  # cross-attention [2b, 197, 768]
 
-                cls_fea = ca_fea[:, 0]  # [2b, 1, 768]
-                token_fea = ca_fea[:, 1:]  # [2b, 196, 768]
-                batch = token_fea.size(0)
+                cls_fea = ca_fea[:, 0]  # [2b, 1, 768]， cls的特征
+                token_fea = ca_fea[:, 1:]  # [2b, 196, 768]， 所有的token的特征
+                batch = token_fea.size(0)  # 2b
 
-                token_fea = token_fea.view(batch, 768, 14, 14)
-                down_fea = self.conv2d(token_fea)
-                down_fea = down_fea.view(batch, 512, 7 * 7)
-                down_fea = down_fea.transpose(1, 2)  # [2b, 49, 512]
+                token_fea = token_fea.view(batch, 768, 14, 14)  # [2b, 768, 14, 14]， 所有的token的特征
+                down_fea = self.conv2d(token_fea) # [2b, 512, 7, 7]， token特征降维
+                down_fea = down_fea.view(batch, 512, 7 * 7)  # [2b, 512, 49]，合并通道
+                down_fea = down_fea.transpose(1, 2)  # [2b, 49, 512] # 交换维度
 
-                sk_fea = down_fea[:batch // 2]
-                im_fea = down_fea[batch // 2:]
-                cos_scores = cos_similar(sk_fea, im_fea)  # [b, 49, 49]
-                cos_scores = cos_scores.view(batch // 2, -1)
-                rn_scores = self.rn(cos_scores)  # [b, 49, 49]
+                sk_fea = down_fea[:batch // 2] # [b, 49, 512]，sk的特征
+                im_fea = down_fea[batch // 2:]  # [b, 49, 512]，im的特征
+                cos_scores = cos_similar(sk_fea, im_fea)  # [b, 49, 49]， 两两计算余弦相似度
+                cos_scores = cos_scores.view(batch // 2, -1)  # [b, 49*49]，合并维度， 49*49=2401
+                rn_scores = self.rn(cos_scores)  # [b, 1]，计算关系网络的分数
 
                 # print('cls_fea:', cls_fea.size())
                 # print('rn_scores:', cls_fea.size())

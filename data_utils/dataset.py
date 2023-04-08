@@ -6,11 +6,13 @@ from .utils import preprocess, get_file_iccv, create_dict_texts
 
 
 def load_data_test(args):
+    #加载所有数据集
     pre_load = PreLoad(args)
     if args.cpu:
         half = False
     else:
         half = True
+    #从所有数据集中选择草图和普通数据集
     sk_valid_data = ValidSet(pre_load, 'sk', half=half)
     im_valid_data = ValidSet(pre_load, 'im', half=half)
     return sk_valid_data, im_valid_data

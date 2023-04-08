@@ -5,7 +5,7 @@ from joblib import delayed, Parallel
 
 
 def calculate(distance, class_same, test=None):
-    arg_sort_sim = distance.argsort()   # 得到从小到大索引值
+    arg_sort_sim = distance.argsort()   # 得到从小到大索引值， 所有距离
     sort_label = []
     for index in range(0, arg_sort_sim.shape[0]):
         # 将label重新排序，根据距离的远近，距离越近的排在前面

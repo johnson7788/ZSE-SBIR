@@ -10,7 +10,7 @@ from utils.util import setup_seed, load_checkpoint
 from utils.valid import valid_cls
 
 def test():
-    # prepare data
+    #加载草图和普通图像数据集
     sk_valid_data, im_valid_data = load_data_test(args)
 
     # prepare model

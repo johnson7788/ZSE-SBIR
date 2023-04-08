@@ -68,7 +68,7 @@ def get_all_train_file(args, skim):
         class_and_indx = ci.readlines()
     # 类名
     cname = np.array([' '.join(cc.strip().split()[:-1]) for cc in class_and_indx])
-
+    # file_ls:所有的图片路径, labels:所有的标签,是数字的array, cname:所有的标签名称
     return file_ls, labels, cname
 
 

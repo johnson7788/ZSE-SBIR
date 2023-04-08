@@ -73,6 +73,7 @@ def load_para(args):
 
 class PreLoad:
     def __init__(self, args):
+        """加载所有数据集"""
         self.all_valid_or_test_sketch = []
         self.all_valid_or_test_sketch_label = []
         self.all_valid_or_test_image = []

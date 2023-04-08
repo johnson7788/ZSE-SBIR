@@ -6,7 +6,7 @@ from torch import Tensor
 class Relation_Network(nn.Module):
     def __init__(self, anchor, dropout=0.1):
         super(Relation_Network, self).__init__()
-
+        self.anchor = anchor
         # 1.0
         if anchor == 49:
             self.rn = nn.Sequential(

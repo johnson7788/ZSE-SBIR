@@ -1,14 +1,50 @@
+import os
+import time
 import numpy as np
-
+from tqdm import tqdm
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-
+from options import Option
+from model.model import Model
+from utils.util import setup_seed, load_checkpoint
 from utils.ap import calculate
-from tqdm import tqdm
+from data_utils.utils import preprocess
+from data_utils.preLoad import PreLoad
 
-import time
+class ValidSet(torch.utils.data.Dataset):
 
+    def __init__(self, pre_load, type_skim='im', half=False, path=False):
+        self.type_skim = type_skim
+        self.half = half
+        self.path = path
+        if type_skim == "sk":
+            self.file_names, self.cls = pre_load.all_valid_or_test_sketch, pre_load.all_valid_or_test_sketch_label
+        elif type_skim == "im":
+            # all_valid_or_test_image: 所有的验证集或者测试集图片, all_valid_or_test_image_label: 所有的验证集或者测试集图片的标签id
+            self.file_names, self.cls = pre_load.all_valid_or_test_image, pre_load.all_valid_or_test_image_label
+        elif type_skim == "train_sketch":
+            self.file_names, self.cls, self.label_names = pre_load.all_train_sketch, pre_load.all_train_sketch_label, pre_load.all_train_sketch_cls_name
+        else:
+            NameError(type_skim + " is not right")
+
+
+    def __getitem__(self, index):
+        # index： 一条数据的索引
+        label = self.cls[index]  # label 为数字
+        file_name = self.file_names[index]
+        if self.path:
+            image = file_name
+        else:
+            # 对图片预处理
+            if self.half:
+                image = preprocess(file_name, self.type_skim).half()
+            else:
+                image = preprocess(file_name, self.type_skim)
+        return image, label
+
+    def __len__(self):
+        return len(self.file_names)
 def valid_cls(args, model, sk_valid_data, im_valid_data):
     """评估数据集"""
     model.eval()
@@ -86,3 +122,48 @@ def valid_cls(args, model, sk_valid_data, im_valid_data):
     map_all, map_200, precision100, precision200 = calculate(all_dist, class_same, test=True)
 
     return map_all, map_200, precision100, precision200
+
+def load_data_test(args):
+    #加载所有数据集
+    pre_load = PreLoad(args)
+    if args.cpu:
+        half = False
+    else:
+        half = True
+    #从所有数据集中选择草图和普通数据集
+    train_sketch = ValidSet(pre_load, 'train_sketch', half=half)
+    return train_sketch
+
+def test():
+    #加载草图和普通图像数据集
+    sk_valid_data, im_valid_data = load_data_test(args)
+
+    # prepare model
+    model = Model(args)
+    if not args.cpu:
+        model = model.half()
+
+    if args.load is not None:
+        assert os.path.isfile(args.load), f'错误: 没有找到模型,请检查路径!, {args.load}'
+        checkpoint = load_checkpoint(args.load, args.cpu)
+    cur = model.state_dict()
+    new = {k: v for k, v in checkpoint['model'].items() if k in cur.keys()}
+    cur.update(new)
+    model.load_state_dict(cur)
+
+    if len(args.choose_cuda) > 1:
+        model = torch.nn.parallel.DataParallel(model.to('cuda'))
+    if not args.cpu:
+        model = model.cuda()
+
+    # valid
+    map_all, map_200, precision_100, precision_200 = valid_cls(args, model, sk_valid_data, im_valid_data)
+    print(f'map_all:{map_all:.4f} map_200:{map_200:.4f} precision_100:{precision_100:.4f} precision_200:{precision_200:.4f}')
+
+if __name__ == '__main__':
+    args = Option().parse()
+    print("test args:", str(args))
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.choose_cuda
+    print("current cuda: " + args.choose_cuda)
+    setup_seed(args.seed)
+    test()
