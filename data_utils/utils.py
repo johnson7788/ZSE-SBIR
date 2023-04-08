@@ -211,8 +211,8 @@ def get_file_list_iccv(args, rootpath, skim, split):
             index = [i for i in range(0, file_names.shape[0], 30)]  # 1806
         file_names = file_names[index[:]]
         labels = labels[index[:]]
-
-    file_names_cls = labels
+    # file_names: 图片路径列表
+    file_names_cls = labels  #标签id列表
     return file_names, file_names_cls
 
 
@@ -229,7 +229,7 @@ def preprocess(image_path, img_type="im"):
         transforms.Normalize(immean, imstd)
     ])
 
-    if img_type == 'im':
+    if img_type == 'im': # 对image 进行resize
         assert os.path.exists(image_path) and os.path.isfile(image_path), f"{image_path} 不存在，请检查"
         return transform(Image.open(image_path).resize((224, 224)).convert('RGB'))
     else:

@@ -5,6 +5,9 @@ from joblib import delayed, Parallel
 
 
 def calculate(distance, class_same, test=None):
+    """
+    计算模型的AP值，distance:距离矩阵,[库中所有商品数量,要预测的商品数量]，class_same:标签矩阵,[库中所有商品数量,要预测的商品数量]
+    """
     arg_sort_sim = distance.argsort()   # 得到从小到大索引值， 所有距离
     sort_label = []
     for index in range(0, arg_sort_sim.shape[0]):
@@ -17,6 +20,7 @@ def calculate(distance, class_same, test=None):
     num_cores = min(multiprocessing.cpu_count(), 4)
 
     if test:
+        # 如果是测试，计算分值
         start = time.time()
 
         aps_all = Parallel(n_jobs=num_cores)(
